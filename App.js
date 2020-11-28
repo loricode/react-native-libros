@@ -1,57 +1,29 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, FlatList ,Text, View } from 'react-native';
-import axios from 'axios'
+import 'react-native-gesture-handler';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+//scren
+import Login from './screen/Login'
+import Home from './screen/Home'
 
-const URL="http://192.168.1.1/applibrolaravel/public/libro" //o localhost
+const Stack = createStackNavigator();
 
-//components
-import Card from './components/Card'
-
-export default function App() {
-
-  const [ listaLibros, setListaLibro ] = useState([])
-
-  useEffect(() => {
-    getlibros()
-  },[])
-
-  const getlibros = async() => {
-    const { data }  = await axios.get(URL)
-    const { libros } = data
-    setListaLibro(libros)
-    console.log(data)
-  }
-  
-  const renderItem = ( { item }) => (
-     <Card nombre={item.nombre} edicion={item.edicion} />
-   ) 
+const App = () => {
 
   return (
-    <View style={styles.container}>
-      <View style={{flex: 0.2, backgroundColor: 'steelblue'}} >
-        <Text style={styles.title}>Libros</Text>
-      </View>
-      
-      <FlatList
-        data={listaLibros}
-        renderItem={renderItem}
-        keyExtractor={item => item.id.toString()} 
-      />
-      <StatusBar style="auto" />
-    </View>
+   <NavigationContainer>
+     <Stack.Navigator initialRouteName="Login">
+       <Stack.Screen name="Login" component={Login}
+         options={{ title: 'applibro'}}
+        />
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{ title: 'Welcome' }}
+        />
+       </Stack.Navigator>
+    </NavigationContainer>
   );
 }
+export default App;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',   
-  },
-  title:{
-    marginTop:15,
-    marginLeft:15,
-    fontSize:18,
-    color:'#fff'
-  }
-});

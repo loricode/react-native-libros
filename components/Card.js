@@ -10,8 +10,6 @@ import { StyleSheet, Text, View } from 'react-native';
       </View>
     );
   }
-
-
   
 const styles = StyleSheet.create({
     cardView: {
