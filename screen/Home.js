@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
+
 import { StyleSheet,TouchableOpacity, 
          FlatList,Text, View,TextInput } from 'react-native';
 import axios from 'axios'
@@ -7,7 +8,7 @@ import axios from 'axios'
 //components
 import Card from '../components/Card'
 
-const URL = "http://192.168.1.1/applibrolaravel/public/libro"
+let URL = "http://localhost/applibrolaravel/public/libro"
 
 const Home = () => {
 
@@ -22,10 +23,9 @@ const Home = () => {
     }, [])
 
   const getlibros = async () => {
-        const { data } = await axios.get(URL)
-        const { libros } = data
-        setListaLibro(libros)
-        console.log(data)
+      const { data } = await axios.get(URL)
+      const { libros } = data
+      setListaLibro(libros)
   }
 
   const addlibro = async() => {
@@ -37,27 +37,29 @@ const Home = () => {
      clearInput()
   }
 
-  const clearInput = () =>{
+  const clearInput = () => {
     setNombre('')  
     setEdicion('')
   }
-    
 
-  const openForm = ()=>{
-    setModal(!modal)
+  const deleteLibro = async(id) =>{
+    const { data } = await axios.delete(URL+`/${id}`)
+    console.log(data)
+    getlibros()
   }
-  
+    
  const renderItem = ({ item }) => (
-        <Card nombre={item.nombre} edicion={item.edicion} />
+      <Card id={item.id}
+            nombre={item.nombre}
+            edicion={item.edicion}
+            deleteLibro={deleteLibro} />
  )
 
     return (
         <View style={styles.container}>
         
-          <TouchableOpacity
-            style={styles.button}
-            onPress={openForm}
-          >
+          <TouchableOpacity style={styles.button}
+            onPress={() => setModal(!modal)} >
               <Text style={{color:'#fff', fontSize:22}}>
                 { modal? 'close':'add' }
               </Text>
@@ -68,18 +70,18 @@ const Home = () => {
       <View style={{borderWidth:1,padding:15,borderColor:'steelblue' }}>
       
        <TextInput
-            style={styles.input}
-            placeholder="Nombre"
-            onChangeText={text => setNombre(text)}
-            value={nombre}
-      />
+          style={styles.input}
+          placeholder="Nombre"
+          onChangeText={text => setNombre(text)}
+          value={nombre}
+       />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Edicion"
-        onChangeText={text => setEdicion(text)}
-        value={edicion}
-      />
+       <TextInput
+          style={styles.input}
+          placeholder="Edicion"
+          onChangeText={text => setEdicion(text)}
+          value={edicion}
+       />
 
      <TouchableOpacity style={styles.button} onPress={addlibro}>
         <Text style={{color:'#fff'}}>Save</Text>
@@ -88,7 +90,7 @@ const Home = () => {
       </View></View> : <FlatList
                         data={listaLibros}
                         renderItem={renderItem}
-                         keyExtractor={item => item.id.toString()}/> }
+                        keyExtractor={item => item.id.toString()}/> }
            
             <StatusBar style="auto" />
         </View>

@@ -14,22 +14,22 @@ const login = ()=>{
   return (
     <View style={styles.container}>
       <View  style={{borderWidth:1,padding:15,borderColor:'#05BF46' }}>
-    <TextInput
+      
+       <TextInput
         style={styles.input}
         placeholder="Username"
         onChangeText={text => setUsername(text)}
         value={username}
-    />
+       />
+
       <TextInput
         style={styles.input}
         placeholder="Password"
         onChangeText={text => setPassword(text)}
         value={password}
-    />
-     <TouchableOpacity
-        style={styles.button}
-        onPress={login}
-      >
+       />
+
+      <TouchableOpacity style={styles.button} onPress={login}>
         <Text style={{color:'#fff'}}>Entrar</Text>
       </TouchableOpacity>
       </View>
@@ -50,7 +50,6 @@ const styles = StyleSheet.create({
      marginBottom:17,
      width:230,
      height: 40, 
-    
      borderColor: 'gray', 
      borderWidth: 1 
   },
