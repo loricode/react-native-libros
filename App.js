@@ -15,6 +15,7 @@ const App = () => {
      <Stack.Navigator initialRouteName="Login">
        <Stack.Screen name="Login" component={Login}
          options={{ title: 'applibro'}}
+         
         />
         <Stack.Screen
           name="Home"

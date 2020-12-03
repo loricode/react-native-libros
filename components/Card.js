@@ -2,16 +2,17 @@ import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
 
- function Card({ id , nombre ,edicion,deleteLibro }) {
+ function Card({ id , nombre ,edicion,deleteLibro, getLibro }) {
   
     return (
       <View style={styles.cardView}>
-        <Text>Nombre: {nombre}</Text>
-        <Text>Edicion: {edicion}</Text>
+        <Text style={{fontSize:18}}>Nombre: {nombre}</Text>
+        <Text style={{fontSize:18}}>Edicion: {edicion}</Text>
      
         <View style={{flexDirection:'row-reverse'}}>
 
-          <TouchableOpacity style={{marginHorizontal:6}} >
+          <TouchableOpacity style={{marginHorizontal:6}} 
+            onPress={getLibro.bind(this, id)}>
            <Ionicons name="md-create" size={32} color="green" />
           </TouchableOpacity>
           

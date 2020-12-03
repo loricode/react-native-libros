@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-
+import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet,TouchableOpacity, 
-         FlatList,Text, View,TextInput } from 'react-native';
+         FlatList, View} from 'react-native';
 import axios from 'axios'
 
 //components
 import Card from '../components/Card'
+import Form from '../components/Form'
 
 let URL = "http://localhost/applibrolaravel/public/libro"
 
 const Home = () => {
 
     const [ listaLibros, setListaLibro ] = useState([])
+    const [ id, setId ] = useState('')
     const [ nombre, setNombre ] = useState('')
     const [ edicion, setEdicion ] = useState('')
     const [ modal,  setModal ] = useState(false)
@@ -42,17 +44,38 @@ const Home = () => {
     setEdicion('')
   }
 
-  const deleteLibro = async(id) =>{
+  const deleteLibro = async(id) => {
     const { data } = await axios.delete(URL+`/${id}`)
     console.log(data)
     getlibros()
   }
+
+  const getLibro = async(idl) => {
+    const { data } = await axios.get(URL+`/${idl}`)
+    console.log(data)
+    const { id, nombre, edicion } = data
+    setId(id)
+    setNombre(nombre)
+    setEdicion(edicion)
+    setModal(true)
+  }
+
+  const updateLibro = async() => {
+    const obj = { id, nombre, edicion }
+    const { data } = await axios.put(URL, obj)
+    console.log(data)
+    getlibros()
+    clearInput()
+  }
+
+
     
  const renderItem = ({ item }) => (
       <Card id={item.id}
             nombre={item.nombre}
             edicion={item.edicion}
-            deleteLibro={deleteLibro} />
+            deleteLibro={deleteLibro}
+            getLibro={getLibro} />
  )
 
     return (
@@ -60,37 +83,29 @@ const Home = () => {
         
           <TouchableOpacity style={styles.button}
             onPress={() => setModal(!modal)} >
-              <Text style={{color:'#fff', fontSize:22}}>
-                { modal? 'close':'add' }
-              </Text>
+            
+           {modal? <Ionicons name="md-close" size={32} color="red"/>
+                
+            :<Ionicons name="md-add-circle" size={32} color="steelblue"/>
+           }
+              
            </TouchableOpacity>
 
- { modal?  
-    <View style={styles.form}>
-      <View style={{borderWidth:1,padding:15,borderColor:'steelblue' }}>
-      
-       <TextInput
-          style={styles.input}
-          placeholder="Nombre"
-          onChangeText={text => setNombre(text)}
-          value={nombre}
-       />
-
-       <TextInput
-          style={styles.input}
-          placeholder="Edicion"
-          onChangeText={text => setEdicion(text)}
-          value={edicion}
-       />
-
-     <TouchableOpacity style={styles.button} onPress={addlibro}>
-        <Text style={{color:'#fff'}}>Save</Text>
-      </TouchableOpacity>
-
-      </View></View> : <FlatList
-                        data={listaLibros}
-                        renderItem={renderItem}
-                        keyExtractor={item => item.id.toString()}/> }
+ { modal? <Form 
+              nombre={nombre}
+              setNombre={setNombre} 
+              edicion={edicion}
+              setEdicion={setEdicion}
+              addlibro={addlibro}
+              updateLibro={updateLibro}
+              /> 
+       
+        :<FlatList
+              data={listaLibros}
+              renderItem={renderItem}
+              keyExtractor={item => item.id.toString()}
+              />
+ }
            
             <StatusBar style="auto" />
         </View>
@@ -103,33 +118,17 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
     },
-    title: {
-        marginTop: 15,
-        marginLeft: 15,
-        fontSize: 18,
-        color: '#fff'
-    },
+   
     button: {
       marginHorizontal:5,  
       alignItems: 'center',
-      backgroundColor: 'steelblue',
+      backgroundColor: '#fff',
+      borderColor:'',
+      borderWidth:2,
+      borderRadius:10,
       padding: 10
     },
-    input:{
-        marginBottom:17,
-        width:230,
-        height: 40, 
-       
-        borderColor: 'gray', 
-        borderWidth: 1 
-     },
-     form: {
-        flex: 1, 
-        alignItems: 'center', 
-        justifyContent: 'center' ,
-        backgroundColor: '#fff',
-        
-      },
+  
 });
 
 export default Home;
